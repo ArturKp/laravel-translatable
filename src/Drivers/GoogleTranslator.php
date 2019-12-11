@@ -27,7 +27,10 @@ class GoogleTranslator implements TranslatorInterface
 
     public function translate($text, $language)
     {
-        $response = $this->client->translate($text, ['target' => $language]);
+        $response = $this->client->translate($text, [
+            'target' => $language,
+            'format' => 'text',
+        ]);
 
         return data_get($response, 'text');
     }
