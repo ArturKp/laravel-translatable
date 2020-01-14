@@ -2,6 +2,7 @@
 
 namespace Mihkullorg\Translatable\Traits;
 
+use Carbon\Carbon;
 use Illuminate\Support\Facades\App;
 use Mihkullorg\Translatable\Facades\Translator;
 use Mihkullorg\Translatable\Models\Translation;
@@ -28,7 +29,10 @@ trait Translatable
     {
         $translation = $this->translations()->field($field)->language($language)->first();
 
-        if ($createIfNotFresh && (! $translation || ! $translation->isFresherThan($this->created_at))) {
+        $createdAt = object_get($this, 'created_at', Carbon::minValue());
+        $updatedAt = object_get($this, 'updated_at', $createdAt);
+
+        if($createIfNotFresh && (!$translation || !$translation->isFresherThan($updatedAt))) {
             return $this->translate($field, $language);
         }
 
